@@ -1,0 +1,434 @@
+#+TITLE: EMO-konijn
+#+STARTUP: inlineimages
+
+* Table of contents :toc:
+- [[#info-over-dit-org-document][Info over dit org document]]
+- [[#1-de-vraag-inzendopgave-306w3][1 De vraag (inzendopgave 306W3)]]
+  - [[#details][Details]]
+  - [[#inzendopgave-het-antwoord][Inzendopgave: het antwoord]]
+- [[#2-de-website-aka-die-antwoord][2 De website (aka "Die antwoord")]]
+  - [[#opbouw-van-de-website][Opbouw van de website]]
+  - [[#generieke-opmaak-begineindecsstags][Generieke opmaak (begin/einde/css/tags)]]
+  - [[#indexphp][index.php]]
+  - [[#loopkonijnphp][LOOPkonijn.php]]
+  - [[#emokonijnphp][EMOkonijn.php]]
+- [[#3-de-emokonijntjes-getekend-met-python][3 De EMOkonijntjes, getekend met Python]]
+  - [[#starten-apache-server-en-verwijderen-oude-website][Starten apache server en verwijderen oude website]]
+
+* Info over dit org document
+
+Dit document gaat over de EMOkonijn website. Deze is gebouwd in Emacs en volgt het literate programming stramien. De website kan direct gegenereerd worden vanuit dit Emacs org document door het runnen van het commando ~org-babel-tangle~. That's it. 
+
+
+* 1 De vraag (inzendopgave 306W3)
+Tijdsinspanning: > 3 uur. Hebt u alle stof goed kunnen bestuderen en alle oefeningen naar tevredenheid kunnen maken? Maak dan nu de volgende inzendopgave die betrekking heeft op het emo-konijn. Een emo-konijn is een ASCII-konijntje dat uit drie regels bestaat. U gaat emo-konijnen genereren met het PHP-programma en een bijbehorende score. U krijgt feedback van uw docent. Bestudeer die grondig en bepaal hoe u uw kennis en vaardigheden kunt vergroten. Binnen enkele dagen ontvangt u de feedback op uw ingeleverde werk. Het resultaat kunt u vinden in de huiswerkresultaten. Veel succes met uw applicatie voor Emo-konijn!
+
+** Details
+
+Realiseer de include emokonijn.php conform de casus en test deze. Let op de Tips en eisen.
+Realiseer het script zodat u kunt kijken hoe vaak random emo-konijntjes hetzelfde zijn.
+Een emo-konijn is een ASCII-konijntje dat uit drie regels bestaat. Met de middelste regel kunt u door een ander karakter een emotie uitbeelden.
+
+#+begin_src ascii
+  ()_()
+  (o.o)
+'(") (")'
+
+  ()_()
+  (x.x)
+'(") (")'
+#+end_src
+
+Tips/eisen:
+
+Zorg voor een proportioneel font (font-family: "monospace").
+Zorg voor 10-15 emoties.
+Werk met arrays, objecten, functies en bestanden;.
+Zorg dat de HTML in functies (of een object) staat en roep deze aan.
+Gebruik includes.
+Werking:
+
+1. Genereer een regel met random 15 emo-konijntjes.
+2. Genereer daaronder wederom een regel met random 15 emo-konijntjes. Markeer hierbij de emo-konijntjes die overeenkomen met de eerste regel (op dezelfde plaats).
+3. Houd een high-score bij van het aantal gelijke emo-konijntjes.
+4. Houd de score bij van het aantal gelijke emo-konijntjes.
+5. Toon daaronder een blok met 'Hoe vaak komen scores voor?'.
+6. Sla de scores op in bestanden.
+7. Zie ook de video met een impressie over de globale werking.
+
+De bestandsstructuur zal er (ongeveer) zo uit gaan zien:
+
+|---------------+----------------+--------------------------------------|
+| css           | main.css       | alle styling                         |
+|---------------+----------------+--------------------------------------|
+| data          | highscore.txt  | hoogste score                        |
+|               | score_0.txt    | hoevaak de score 0 voorkomt          |
+|               | score_1.txt    | hoevaak de score 1 voorkomt          |
+|               | ...            | etc                                  |
+|---------------+----------------+--------------------------------------|
+| include       | emokonijn.php  | functies of object rondom EMO-konijn |
+|               | html_begin.php | Beginstuk van HTML                   |
+|               | html_tags.php  | De gebruikte HTML-tags               |
+|               | html_einde.php | Eindstuk van HTML                    |
+|---------------+----------------+--------------------------------------|
+| emokonijn.php |                | Startpunt(like index.html)           |
+|---------------+----------------+--------------------------------------|
+
+
+
+** Inzendopgave: het antwoord
+
+Het antwoord op deze vraag is dit .org bestand. De website zelf kan ook worden gezien als antwoord maar dan mis je de achtergrond die in dit literate programming document staat.
+
+
+
+* 2 De website (aka "Die antwoord")
+
+** Opbouw van de website
+
+TODO: Uitschrijven als ik klaar ben.....
+
+
+Onderstaande code block gebruik ik om te helpen met het voorbereiden van enkele zaken:
+- starten van de Apache server (als deze niet loopt)
+- verwijderen van bestanden op /srv/http, zodat er geen vervuiling is van andere projecten.
+#+BEGIN_SRC shell :dir /sudo::
+#alacritty -e systemctl restart httpd.service &&
+alacritty -e rm /srv/http/*.* #verwijder alle files, begin met schone lei
+#+end_src
+
+
+De codeblocks voor de website staan hieronder. Codeblocks voor het maken van lijsten en de afzonderlijke example php codeblocks zijn in het laatste hoofdstuk te vinden.
+
+** Generieke opmaak (begin/einde/css/tags)
+
+Het onderstaande codeblock, genaamd ~html_begin.php~ is de header file. Dit is geschreven als het begin van een html bestand. Het eindigd dus niet met ~</body> </html>~.
+Opmerking over het codeblock: omdat de files in de /srv/http staan is sudo recht nodig, daarom staat dit in de #+begin regel.
+
+#+name: html_begin.php
+#+begin_src html :tangle "/sudo::/srv/http/html_begin.php"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EMOkonijn</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <h1>&#128007 EMOkonijn &#128007</h1>
+<ul>
+  <li><a href="index.php">Konijnenhol</a></li>
+  <li><a href="LOOPkonijn.php">Het loop konijn</a></li>
+  <li><a href="EMOkonijn.php">RAW: EMOkonijn.php</a></li>
+  <li><a href="EMOkonijn.php">Literate programming</a></li>
+</ul>
+<c>
+#+end_src
+
+Elk begin heeft ook weer een einde. Daarom is  ~html_einde.php~ nodig. Deze sluit de HTML pagina af. Zie het volgende codeblock.
+
+#+name: html_einde.php
+#+begin_src html :tangle "/sudo::/srv/http/html_einde.php"
+<?phpinfo
+// html_einde.php pagina
+</c>
+</body>
+</html>
+#+end_src
+
+
+.... ~html_tags.php~. Wat doe ik hiermee???? het staat in de opdracht, dus beter wel gebruiken
+
+#+name: html_tags.php
+#+begin_src html :tangle "/sudo::/srv/http/html_tags.php"
+<?phpinfo
+// html_tags.php pagina
+
+    echo "html_tags.php pagina...."
+
+?>
+#+end_src
+
+
+De stijl van de EMO-konijn website staat in de css style sheet genaamd ~main.css~. Deze is natuurlijk in een dark theme gemaakt om de gebruiker niet te bestoken met die irritante fotonen.
+
+#+name: main.css
+#+begin_src css :tangle "/sudo::/srv/http/main.css"
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-block;
+  text-align: left;
+  background-color: black;
+}
+h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #E06C75;
+
+}
+h2 {
+  text-align: left;
+  font-size: 1.6rem;
+  color: #B5B5B5;
+}
+p {
+  font-size: 1.4rem;
+}
+.topnav {
+  overflow: hidden;
+  background-color: black;
+}
+body {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.content {
+  padding: 5%;
+}
+.card-grid {
+  max-width: 600px;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.card {
+  background-color: black;
+  box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5);
+}
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #E06C75
+}
+ul{
+  list-style-type: none;
+  font-size:1.2rem;
+  color:#E06C75;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #111111;
+}
+
+li {
+  float: left; dt
+}
+
+li a {
+  display: block;
+  color:#E06C75;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #E06C75;
+  color:#111111;
+}
+
+
+a {
+  padding: 5%;
+  display: inline;
+  color:#E06C75;
+}
+c {
+  padding: 5%;
+  text-align: left;
+  color:#888;
+  font-family:  "Courier New", monospace;
+}
+
+d {
+  text-align: center;
+  color:#888;
+  font-family:  "Courier New", monospace;
+}
+}
+
+li {
+    float: left;
+  color:#E06C75;
+}
+
+#+end_src
+
+** index.php
+Onderstaande is de main page van de website, ~index.php~. Deze bevat de code van ~EMOkonijn.php~.
+#+name: index.php
+#+begin_src html :tangle "/sudo::/srv/http/index.php"
+<?php
+ require_once("html_begin.php"); //header toevoegen
+ require_once("EMOkonijn.php");  //body toevoegen
+ require_once("html_einde.php"); //footer toevoegen
+?>
+#+end_src
+
+
+** LOOPkonijn.php
+Dit is een test pagina om een enkele geanimeerde bunny te laten zien, aka het LOOPkonijn.
+Hier ben ik begonnen om te spelen met het konijn en de random generator. De animatie wordt gedreven door en refresh van pagina. De PHP code is spaghetti code, maar af en toe is spaghetti best lekker!
+
+
+De webpagina.
+#+name: LOOPkonijn.php
+#+begin_src html :tangle "/sudo::/srv/http/LOOPkonijn.php"
+<?php
+ require_once("html_begin.php"); //header toevoegen
+ require_once("SingleBunny.php");  //body toevoegen
+ require_once("html_einde.php"); //footer toevoegen
+?>
+#+end_src
+
+
+De php code.
+#+name: SingleBunny.php
+#+begin_src html :tangle "/sudo::/srv/http/SingleBunny.php"
+<meta http-equiv="refresh" content="0.5">
+<?php
+
+  //NOTE: de Arrays hebben soms dubbele entries, anders bewegen de oren teveel
+  $oren= array("&nbsp&nbsp()_(}&nbsp&nbsp",
+               "&nbsp&nbsp{)_[)&nbsp&nbsp",
+               "&nbsp&nbsp(}_()&nbsp&nbsp",
+               "&nbsp&nbsp{)_()&nbsp&nbsp",
+               "&nbsp&nbsp()_()&nbsp&nbsp");
+
+  //Af en toe een stapje zetten, het is namelijk een loop konijn
+  $poten= array('&nbsp(") (.)&nbsp',
+                '&nbsp(.) (")&nbsp');
+
+  //Knipoog konijn. Dubbele entries om niet te vaak te knipperen.
+  $lichaam= array("&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.<)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                  "&nbsp&nbsp(>.o)&nbsp&nbsp");
+  $aantalbunnies= count($lichaam)-1;
+  echo "<br>", $oren[rand(0,4)];
+  echo "<br>", $lichaam[rand(0,$aantalbunnies)];
+  echo "<br>", $poten[rand(0,1)];
+  echo "<br>";
+
+?>
+#+end_src
+
+
+
+** EMOkonijn.php
+
+De PHP code hieronder haalt alle onderdelen bij elkaar die samen EMOkonijn.php maken.
+#+name: EMOkonijn.php
+#+begin_src html :tangle "/sudo::/srv/http/EMOkonijn.php"
+<?php
+ require_once("konijnenbouten.php"); //Onderdelen van de EMOkonijnen
+ require_once("bunnystring.php");    //printen van 15 bunnies.
+?>
+#+end_src
+
+Het konijn is opgebouwd uit de volgende konijnenbouten.
+#+name: konijnenbouten.php
+#+begin_src html :tangle "/sudo::/srv/http/konijnenbouten.php"
+<?php
+  $oren= ("()_()");
+  $poten= ('(") (")');
+
+  $lichaam= array("(o.o)", "(X.X)", "(...)", "(*.*)", "(0.0)",
+                  "(o.-)", "(-.0)", "(o.0)", "(#.#)", "(~.~)",
+                  "(>.<)", "(,.,)", "(o^o)", "(`.`)", "('.')");
+?>
+#+end_src
+
+
+Testen met het printen van 15 bunnies...
+#+name: bunnystring.php
+#+begin_src html :tangle "/sudo::/srv/http/bunnystring.php"
+<?php
+
+  $aantalbunnies= count($lichaam)-1;
+  echo "<br>", $oren;
+  echo "<br>", $lichaam[rand(0,$aantalbunnies)];
+//  echo "<br>", $poten[rand(0,1)];
+  echo "<br>", $poten;
+  echo "<br>";
+
+
+?>
+#+end_src
+
+
+
+
+* 3 De EMOkonijntjes, getekend met Python
+
+In deze sectie heb ik de konijnen voor het eerst uitgetekend met behulp van python in codeblocks.
+
+#+name: EMOkonijntjes
+#+begin_src python :results output
+oren=    " ()_()  "
+poten=   '(") (") '
+lichaam=[" (o.o) ", " (X.X) ", " (...) ", " (*.*) ", " (0.0) ",
+         " (o.-) ", " (-.0) ", " (o.0) ", " (#.#) ", " (~.~) ",
+         " (>.<) ", " (,.,) ", " (o^o) ", " (`.`) ", " ('.') "]
+teller=0
+
+print ("De lijst van bunnies\n")
+for y in range(0,3):
+  # Drie maal herhalen want er zijn drie rijen van 5
+  # For loop die vijf bunnies print naast elkaar, daarom
+  # staan in de volgende print rijen vijf entries.
+  # De range is drie omdat de array bestaat uit 15 (15/5=3)
+  print (5* oren)
+  print (lichaam[(y*5)],lichaam[(y*5)+1], lichaam[(y*5)+2],lichaam[(y*5)+3], lichaam[(y*5)+4])
+  print (5* poten, "")
+  print ()
+#+end_src
+
+#+RESULTS: EMOkonijntjes
+#+begin_example
+De lijst van bunnies
+
+ ()_()   ()_()   ()_()   ()_()   ()_()
+ (o.o)   (X.X)   (...)   (*.*)   (0.0)
+(") (") (") (") (") (") (") (") (") (")
+
+ ()_()   ()_()   ()_()   ()_()   ()_()
+ (o.-)   (-.0)   (o.0)   (#.#)   (~.~)
+(") (") (") (") (") (") (") (") (") (")
+
+ ()_()   ()_()   ()_()   ()_()   ()_()
+ (>.<)   (,x,)   (o^o)   (`.`)   ('.')
+(") (") (") (") (") (") (") (") (") (")
+
+#+end_example
+
+
+
+
+
+
+
+
+
+
+
+** Starten apache server en verwijderen oude website
+
+Onderstaande code block gebruik ik om te helpen met het voorbereiden van enkele zaken:
+- starten van de Apache server (als deze niet loopt)
+- verwijderen van bestanden op /srv/http, zodat er geen vervuiling is van andere projecten.
+NOTE: code block worden in Emacs uitgevoerd door enter te drukken als je erin staat met de cursor.
+  
+#+BEGIN_SRC shell :dir /sudo::
+#alacritty -e systemctl restart httpd.service &&
+alacritty -e rm /srv/http/*.* #verwijder alle files, begin met schone lei
+#+end_src
+
+#+RESULTS:
