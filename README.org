@@ -1,0 +1,478 @@
+#+TITLE: EMO-konijn
+#+STARTUP: inlineimages
+
+* Table of contents :toc:
+- [[#1-info-over-dit-org-document][1 Info over dit org document]]
+- [[#2-emokonijn-de-website][2 Emokonijn, de website]]
+  - [[#opbouw-van-de-website][Opbouw van de website]]
+  - [[#generieke-opmaak-begineindecsstags][Generieke opmaak (begin/einde/css/tags)]]
+  - [[#indexphp][index.php]]
+  - [[#loopkonijnphp][LOOPkonijn.php]]
+  - [[#emokonijnphp-en-onderliggende-php][EMOkonijn.php, en onderliggende php]]
+- [[#3-codeblocks-gebruikt-tijdens-dit-project-niet-direct-voor-de-website][3 Codeblocks, gebruikt tijdens dit project (niet direct voor de website)]]
+  - [[#de-emokonijntjes-getekend-met-python][De EMOkonijntjes, getekend met Python]]
+  - [[#starten-apache-server-verwijderen-oude-website-files-en-aanmaken-rechten-voor-data_logtxt][Starten apache server, verwijderen oude website files en aanmaken rechten voor data_log.txt]]
+
+* 1 Info over dit org document
+
+Dit document gaat over een EMOkonijn website. Deze is gebouwd in Emacs en volgt het literate programming stramien. De website kan direct gegenereerd worden vanuit dit Emacs org document door het runnen van het commando ~org-babel-tangle~. That's it.
+
+
+* 2 Emokonijn, de website
+
+** Opbouw van de website
+
+De codeblocks voor de website staan in dit hoofdstuk.
+
+** Generieke opmaak (begin/einde/css/tags)
+
+Het onderstaande codeblock, genaamd ~html_begin.php~ is de header file. Dit is geschreven als het begin van een html bestand. Dit bestand sluit dus niet af met ~</body> </html>~.
+Opmerking over het codeblock: omdat de files in de /srv/http staan is sudo recht nodig, daarom staat dit in de #+begin regel.
+
+#+name: html_begin.php
+#+begin_src html :tangle "/sudo::/srv/http/html_begin.php"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EMOkonijn</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <h1>&#128007 EMOkonijn &#128007</h1>
+<ul>
+  <li><a href="index.php">Konijnenhol</a></li>
+  <li><a href="LOOPkonijn.php">Het loop konijn</a></li>
+  <li><a href="https://github.com/Prutserdt/EMOrabbit">Literate programming (Github)</a></li>
+</ul>
+<c>
+#+end_src
+
+Elk begin heeft ook weer een einde. Daarom is  ~html_einde.php~ nodig. Deze sluit de HTML pagina af. Zie het volgende codeblock.
+#+name: html_einde.php
+#+begin_src html :tangle "/sudo::/srv/http/html_einde.php"
+<?
+// html_einde.php pagina
+</c>
+</body>
+</html>
+#+end_src
+
+De stijl van de EMO-konijn website staat in de css style sheet genaamd ~main.css~. Het monospace font Courier New is gekozen. De website is natuurlijk met een dark theme gemaakt om de gebruiker niet te bestoken met die irritante fotonen.
+#+name: main.css
+#+begin_src css :tangle "/sudo::/srv/http/main.css"
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-block;
+  text-align: left;
+  background-color: black;
+}
+h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #E06C75;
+}
+h2 {
+  text-align: left;
+  font-size: 1.6rem;
+  color: #B5B5B5;
+}
+p {
+  font-size: 1.4rem;
+}
+.topnav {
+  overflow: hidden;
+  background-color: black;
+}
+body {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.content {
+  padding: 5%;
+}
+ul{
+  list-style-type: none;
+  font-size:1.2rem;
+  color:#E06C75;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #111111;
+}
+li {
+  float: left; dt
+}
+li a {
+  display: block;
+  color:#E06C75;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+li a:hover {
+  background-color: #E06C75;
+  color:#111111;
+}
+a {
+  padding: 5%;
+  display: inline;
+  color:#E06C75;
+}
+c {
+  padding: 5%;
+  text-align: left;
+  color:#888;
+  font-family:  "Courier New", monospace;
+}
+d {
+  text-align: center;
+  color:#888;
+  font-family:  "Courier New", monospace;
+}
+li {
+    float: left;
+  color:#E06C75;
+}
+#+end_src
+
+
+** index.php
+Onderstaande is de main page van de website, ~index.php~. Deze bevat de code van ~EMOkonijn.php~.
+#+name: index.php
+#+begin_src html :tangle "/sudo::/srv/http/index.php"
+<?php
+    require_once("html_begin.php"); //header
+    require_once("EMOkonijn.php");  //body
+    require_once("html_einde.php"); //footer
+?>
+#+end_src
+
+
+** LOOPkonijn.php
+Dit is een test pagina om een enkele geanimeerde bunny te laten zien, aka het LOOPkonijn.
+Hier ben ik begonnen om te spelen met het konijn en de random generator. De animatie wordt gedreven door een refresh van pagina. De PHP code is spaghetti code, maar af en toe is spaghetti best lekker!
+In ~LOOPkonijn.php~ staat:
+#+name: LOOPkonijn.php
+#+begin_src html :tangle "/sudo::/srv/http/LOOPkonijn.php"
+<?php
+    require_once("html_begin.php");  //header
+    require_once("SingleBunny.php"); //body
+    require_once("html_einde.php");  //footer
+?>
+#+end_src
+
+De php code ~SingleBunny.php~ ziet er zo uit:
+#+name: SingleBunny.php
+#+begin_src html :tangle "/sudo::/srv/http/SingleBunny.php"
+<meta http-equiv="refresh" content="0.5">
+<?php
+    //NOTE: de Arrays hebben soms dubbele entries, anders bewegen de oren teveel
+    $oren= array("&nbsp&nbsp()_(}&nbsp&nbsp",
+                 "&nbsp&nbsp{)_[)&nbsp&nbsp",
+                 "&nbsp&nbsp(}_()&nbsp&nbsp",
+                 "&nbsp&nbsp{)_()&nbsp&nbsp",
+                 "&nbsp&nbsp()_()&nbsp&nbsp");
+
+    //Af en toe een stapje zetten, het is namelijk een loop konijn
+    $poten= array('&nbsp(") (.)&nbsp',
+                  '&nbsp(.) (")&nbsp');
+
+    //Dubbele entries om niet te vaak te knipperen.
+    $lichaam= array("&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.<)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(o.o)&nbsp&nbsp",
+                    "&nbsp&nbsp(>.o)&nbsp&nbsp");
+    $aantalbunnies= count($lichaam)-1;
+    echo "<br>", $oren[rand(0,4)];
+    echo "<br>", $lichaam[rand(0,$aantalbunnies)];
+    echo "<br>", $poten[rand(0,1)];
+    echo "<br>";
+?>
+#+end_src
+
+
+** EMOkonijn.php, en onderliggende php
+
+De ~EMOkonijn.php~ code hieronder haalt alle onderdelen bij elkaar.
+#+name: EMOkonijn.php
+#+begin_src html :tangle "/sudo::/srv/http/EMOkonijn.php"
+<?php
+    require_once("konijnenbouten.php");   //Onderdelen van de EMOkonijnen
+    require_once("EMOarrays.php");        //De twwee arrays aanmaken voor de twee rijen EMOkonijnen
+    require_once("EMOprinter.php");       //Printen van de twee rijen EMOkonijnen
+    require_once("EMOscore.php");         //Scores berekenen.
+    require_once("ScoreWegschrijven.php");//Wegschrijven naar log
+//  require_once("ReloadPage.php");       //Reload pagina 10x/sec om data te generenen plus debug info
+?>
+#+end_src
+
+Het konijn is opgebouwd uit de volgende  ~konijnenbouten.php~
+#+name: konijnenbouten.php
+#+begin_src html :tangle "/sudo::/srv/http/konijnenbouten.php"
+<?php
+    $oren=  ("()_()");
+    $poten= ('(") (")');
+    global $lichaam;
+    $lichaam= array("(o.o)", "(o.<)", "(>.<)", "(*.*)",
+//                  "(0.0)", "(o.-)", "(-.0)", "(o.0)",
+//                  "(#.#)", "(~.~)", "(...)", "('.')",
+// Voor de statistiek heb ik deze weggehaald, anders zijn er alleen 0 en 1 scores.
+// De array nummering is geautomatiseerd met $aantalbunnies, daardoor kun je deze
+// regels eenvoudig uncommenten en daarna werkt de code gewoon.
+                    "(o^o)", "(-.-)", "(~.~)");
+?>
+#+end_src
+
+Aanmaken van twee arrays met willekeurige nummers met die gebruikt worden voor de twee rijen met EMOkonijnen gebeurd in ~EMOarrays.php:
+#+name: EMOarrays.php
+#+begin_src html :tangle "/sudo::/srv/http/EMOarrays.php"
+<?php
+//Aanmaken van twee arrays met willekeurige nummers met die gebruikt worden voor de twee rijen met EMOkonijnen.
+
+    $aantalbunnies= count($lichaam)-1;
+    // Aanmaken van willekeurige array A. Gebaseerd op het aantal aangemaakte bunnies ($lichaam)
+    for ($x = 0; $x <= (14); $x++) {
+        $ArrayA[$x]=rand(0,$aantalbunnies-1); //ArrayA wordt gebruikt voor de bovenste rij
+    }
+
+    // Aanmaken van willekeurige array B. Gebaseerd op het aantal aangemaakte bunnies ($lichaam)
+    for ($x = 0; $x <= (14); $x++) {
+        $ArrayB[$x]=rand(0,$aantalbunnies-1); //ArrayB wordt gebruikt voor de onderste rij
+    }
+?>
+#+end_src
+
+
+Onderstaande code, ~EMOprinter.php~, print de twee rijen van EMOkonijnen.
+#+name: EMOprinter.php
+#+begin_src html :tangle "/sudo::/srv/http/EMOprinter.php"
+<?php
+//Printen van twee rijen van 15 EMOkonijnen
+
+    function kleurSelect($string){
+        // Print normale kleur of in rood
+        // Gebruikt voor oren/poten/asterix
+        global $ArrayA;
+        global $ArrayB;
+        for ($x = 0; $x <= (14); $x++) {
+            if ($ArrayA[$x]===$ArrayB[$x]){
+                echo '<span style="color: #E06C75 ;">' . $string.  '</span>';
+            } else {
+            echo $string;
+            }
+        }
+    echo "*<br>";
+    }
+
+    function konijnSelecter($arraySelect){
+        // Printen van het konijnen lichaam (rood/wit)
+        // Function should be called ONLY by: konijnselecter($ArrayA) or
+        //                                    konijnselecter($ArrayB)
+        global $lichaam;
+        global $ArrayA;
+        global $ArrayB;
+        for ($x = 0; $x <= (14); $x++) {
+        $selection=$arraySelect[$x];
+            if ($ArrayA[$x]===$ArrayB[$x]){
+               echo "*&nbsp&nbsp",'<span style="color: #E06C75;">' . $lichaam[$selection].  '</span>',"&nbsp&nbsp";
+            } else {
+            echo "*&nbsp&nbsp",$lichaam[$selection],"&nbsp&nbsp";
+            }
+        }
+    echo "*<br>";
+    }
+
+    function EMOrij($select){
+        //Functies die gebruikt worden om een rij EMOkonijnen aan te maken
+        global $oren;
+        global $poten;
+        kleurSelect("**********");                 // Sterren rij
+        kleurSelect("*&nbsp&nbsp$oren&nbsp&nbsp"); // Oren rij
+        KonijnSelecter($select);                   // lichaam rij
+        kleurSelect("*&nbsp$poten&nbsp");          // Poten rij
+        kleurSelect("**********");                 // Sterren rij
+    }
+
+    echo "<br>";        
+    $aantalbunnies= count($lichaam); // Tellen van het aantal unieke konijnen
+    EMOrij($ArrayA);                 // Eerste rij van EMOkonijnen printen
+    EMOrij($ArrayB);                 // Tweede rij EMOkonijnen printen
+?>
+#+end_src
+
+
+In ~EMOscore.php~ wordt de score van de huidige run berekend en worden de scores van alle runs berekend uit 'data_log.txt':
+#+name: EMOscore.php
+#+begin_src html :tangle "/sudo::/srv/http/EMOscore.php"
+<?php
+// Bereken de scores van de huidige run, en haal scores uit het textfile.
+
+    function maxScore(){
+        $fs = fopen("data_log.txt", 'r') or die("Failed to create file"); // r: read only
+        global $ft;
+        global $maxScore;
+        $tempScore = 0;
+        $temp=0;
+        global $ScoreNr;
+        while (! feof ($fs)){
+            global $temp;
+            $tempf=fgets($fs);      // temp: de waarde van huidige regel
+            $temp= (int) $tempf;    // getal is een integer
+            if ($temp>$maxScore){   // Als ScoreNr gevonden wordt dan score tellen
+                global $maxScore;
+                global $temp;
+                $maxScore= $temp;
+            }
+            global $temp;
+            global $ScoreNr;
+        }
+    }
+
+
+    $score=0;      // Beginnen met het zoeken van Score 0 in textfile
+    global $score;
+   // Berekend de score van de huidige twee runs.
+    global $ArrayA;
+    global $ArrayB;
+    for ($x = 0; $x <= (14); $x++) {
+        if ($ArrayA[$x]===$ArrayB[$x]){
+            $score++;
+        }
+    }
+
+
+    maxScore();
+    // Printen van de score statistieken op de webpagina
+    echo "<br><br>Score: &nbsp&nbsp&nbsp&nbsp&nbsp", $score;
+    echo "<br>High score: ", $maxScore;
+    echo '<br><br><span style="color: #E06C75;">' . "Hoe vaak komen de scores voor?".'</span><br>';
+
+    $ScoreNr=0;      // Beginnen met het zoeken van Score 0 in textfile
+    global $ScoreNr;
+
+    do{
+        $fs = fopen("data_log.txt", 'r') or die("Failed to create file"); // r: read only
+        global $ft;
+        global $tempScore;
+        $tempScore = 0;
+        $temp=0;
+        global $ScoreNr;
+        while (! feof ($fs)){
+            global $temp;
+            $tempf=fgets($fs);      // temp: de waarde van huidige regel
+            $temp= (int) $tempf;    // getal is een integer
+            if ($temp===$ScoreNr){  // Als ScoreNr gevonden wordt dan score tellen
+                global $ScoreNr;
+                global $temp;
+                $tempScore= $tempScore + 1;
+            }
+            global $temp;
+            global $ScoreNr;
+        }
+        echo "Score ", $ScoreNr, " komt ", $tempScore, " keer voor.<br>";
+        fclose($fs);
+        $ScoreNr++;
+    } while ($ScoreNr <= $maxScore);
+?>
+#+end_src
+
+Uncomment de regel in ~EMOkonijn.php~ om de webpagina 10x per seconde te laten lopen. Dit genereerd snel datapunten. Verder wordt er wat extra informatie gegeven. De code staat in ~ReloadPage.php~:
+#+name: ReloadPage.php
+#+begin_src html :tangle "/sudo::/srv/http/ReloadPage.php"
+<meta http-equiv="refresh" content="0.1">
+<?php
+    echo "<br><br><br><br><br><br>************Debugging info************<br>";
+    echo "<br>Aantal unieke konijnenemoties: ", $aantalbunnies, "<br>";
+    echo "<br>ArrayA:<br>";
+    print_r($ArrayA);
+    echo "<br><br>ArrayB<br>";
+    print_r($ArrayB);
+    echo "<br><br>De score van deze run is: ",$score,".<br><br>";
+    echo "**********Einde debugging info**********<br>";
+?>
+#+end_src
+
+Wegschrijven van de score naar ~data_log.txt~ met de volgende code:
+#+name: ScoreWegschrijven.php
+#+begin_src html :tangle "/sudo::/srv/http/ScoreWegschrijven.php"
+<?php
+    global $score;
+    $fh = fopen("data_log.txt", 'a') or die("Failed to create file"); // a voor append to file
+    fwrite($fh, $score );
+    fwrite($fh, "\n");
+    fclose($fh);
+//  echo "<br><br>De score is weggeschreven in bestand 'data_log.txt'.";
+?>
+#+end_src
+
+
+* 3 Codeblocks, gebruikt tijdens dit project (niet direct voor de website)
+
+** De EMOkonijntjes, getekend met Python
+
+De konijnen heb ik voor het eerst uitgetekend met behulp van een stuk Python script:
+
+#+name: EMOkonijntjes
+#+begin_src python :results output
+oren=    " ()_()  "
+poten=   '(") (") '
+lichaam=[" (o.o) ", " (X.X) ", " (...) ", " (*.*) ", " (0.0) ",
+         " (o.-) ", " (-.0) ", " (o.0) ", " (#.#) ", " (~.~) ",
+         " (>.<) ", " (,.,) ", " (o^o) ", " (`.`) ", " ('.') "]
+teller=0
+
+print ("De lijst van bunnies\n")
+for y in range(0,3):
+  # Drie maal herhalen want er zijn drie rijen van 5
+  # For loop die vijf bunnies print naast elkaar, daarom
+  # staan in de volgende print rijen vijf entries.
+  # De range is drie omdat de array bestaat uit 15 (15/5=3)
+  print (5* oren)
+  print (lichaam[(y*5)],lichaam[(y*5)+1], lichaam[(y*5)+2],lichaam[(y*5)+3], lichaam[(y*5)+4])
+  print (5* poten, "")
+  print ()
+#+end_src
+
+Output van het script:
+#+RESULTS: EMOkonijntjes
+#+begin_example
+De lijst van bunnies
+
+ ()_()   ()_()   ()_()   ()_()   ()_()
+ (o.o)   (X.X)   (...)   (*.*)   (0.0)
+(") (") (") (") (") (") (") (") (") (")
+
+ ()_()   ()_()   ()_()   ()_()   ()_()
+ (o.-)   (-.0)   (o.0)   (#.#)   (~.~)
+(") (") (") (") (") (") (") (") (") (")
+
+ ()_()   ()_()   ()_()   ()_()   ()_()
+ (>.<)   (,x,)   (o^o)   (`.`)   ('.')
+(") (") (") (") (") (") (") (") (") (")
+
+#+end_example
+
+
+** Starten apache server, verwijderen oude website files en aanmaken rechten voor data_log.txt
+
+Onderstaande shell code block gebruik ik om te helpen met het voorbereiden van enkele zaken:
+- starten van de Apache server (als deze niet loopt)
+- verwijderen van bestanden op /srv/http, zodat er geen vervuiling is van andere projecten.
+- aanmaken van een leeg bestand data_log.txt.
+- veranderen van rechten van het bestand data_log.txt
+NOTE: code block worden in Emacs uitgevoerd door enter te drukken als je erin staat met de cursor.
+#+name: start-shell-script
+#+BEGIN_SRC shell :dir /sudo::
+alacritty -e systemctl restart httpd.service && # start Apache server
+alacritty -e rm /srv/http/*.* && # verwijder alle files, begin met schone lei
+touch /srv/http/data_log.txt     # aanmaken van een leeg log bestand
+chmod 777 /srv/http/data_log.txt # give rights to data_log.txt for all users
+#+end_src
+
